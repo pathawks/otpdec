@@ -6,3 +6,7 @@ edition = "2021"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
+data-encoding = "2.2.3"
+hex = "0.4.3"
+hmac = "0.12.1"
+sha1 = "0.10.5"
