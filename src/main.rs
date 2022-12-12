@@ -16,12 +16,14 @@ fn get_current_time() -> u64 {
 }
 
 fn hex_string_to_bytes(hex: String) -> Vec<u8> {
-    let bytes = hex[..].as_bytes();
-    return BASE32.decode(bytes).expect("Decoded bytes");
+    let bytes = hex.as_bytes();
+    return BASE32.decode(bytes)
+        .expect("decoding hex string");
 }
 
 fn hmac_sha<D>(key_bytes: Vec<u8>, text: Vec<u8>) -> Vec<u8> {
-    let mac = Hmac::<Sha1>::new_from_slice(&key_bytes[..]).expect("Hmac?");
+    let mac = Hmac::<Sha1>::new_from_slice(&key_bytes)
+        .expect("Mac from key_bytes");
     return mac.chain_update(text)
         .finalize()
         .into_bytes()
@@ -30,12 +32,13 @@ fn hmac_sha<D>(key_bytes: Vec<u8>, text: Vec<u8>) -> Vec<u8> {
 
 fn generate_totp<D>(key: Vec<u8>, time: Vec<u8>, return_digits: usize) -> String {
     let hash = hmac_sha::<D>(key, time);
-    let offset = usize::from(hash.last().expect("Need a byte") & 0xf);
-    let binary =
-             (u32::from(hash[offset] & 0x7f) << 24) |
-             (u32::from(hash[offset + 1 & 0xff]) << 16) |
-             (u32::from(hash[offset + 2 & 0xff]) << 8) |
-             u32::from(hash[offset + 3] & 0xff);
+    let offset_byte = 0xf & hash.last()
+        .expect("Hash needs to not be empty");
+    let offset = usize::from(offset_byte);
+    let bytes = hash[offset..offset+4]
+        .try_into()
+        .expect("Bytes");
+    let binary = u32::from_be_bytes(bytes) & 0x7fff_ffff;
     let otp = binary % DIGITS_POWER[return_digits];
     return format!("{:0digits$}", otp, digits = return_digits);
 }
