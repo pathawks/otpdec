@@ -13,7 +13,7 @@ fn get_current_time() -> u64 {
         .duration_since(SystemTime::UNIX_EPOCH)
         .as_ref()
         .map(Duration::as_secs)
-        .unwrap_or(0);
+        .expect("SystemTime before UNIX EPOCH!");
 }
 
 fn hex_string_to_bytes(hex: String) -> Vec<u8> {
