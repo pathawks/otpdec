@@ -3,7 +3,6 @@ use hmac::Hmac;
 use hmac::Mac;
 use sha1::Sha1;
 use std::io;
-use std::ops::BitAnd;
 use std::time::Duration;
 use std::time::SystemTime;
 
@@ -35,8 +34,7 @@ fn hmac_sha<D>(key_bytes: Vec<u8>, text: Vec<u8>) -> Vec<u8> {
 fn generate_totp<D>(key: Vec<u8>, time: Vec<u8>, return_digits: usize) -> String {
     let hash = hmac_sha::<D>(key, time);
     let offset = hash.last()
-        .as_deref()
-        .map(|b| b.bitand(0xf))
+        .map(|b| b & 0xf)
         .map(usize::from)
         .expect("Hash needs to not be empty");
     let binary = 0x7fff_ffff & hash[offset..offset+4]
