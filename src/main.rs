@@ -1,11 +1,11 @@
+use data_encoding::BASE32;
 use hmac::Hmac;
 use hmac::Mac;
 use sha1::Sha1;
-use std::time::SystemTime;
-use data_encoding::BASE32;
-use std::time::Duration;
-use std::ops::BitAnd;
 use std::io;
+use std::ops::BitAnd;
+use std::time::Duration;
+use std::time::SystemTime;
 
 static DIGITS_POWER: [u32; 9] = [1,10,100,1000,10000,100000,1000000,10000000,100000000];
 
