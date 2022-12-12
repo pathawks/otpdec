@@ -7,3 +7,12 @@ The motivation was a need for something that wasn't quite a password manager, bu
 ```sh
 gpg --decrypt ~/.otp/MyEmailAccount.gpg | otpdec | pbcopy
 ```
+
+Input should be _only_ the secret, not the full `totp://` URL.
+
+
+### Limitations
+
+Currently, only SHA1 is supported.
+Only 6 digit codes are generated. 
+Only 30-second time steps are supported.
